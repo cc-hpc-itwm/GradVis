@@ -2,6 +2,8 @@
 
 A DNN Training Visualization Toolbox
 
+Original Paper: [arxiv.org/abs/1909.12108](arxiv.org/abs/1909.12108)
+
 ## Usage
 
 ### Import using 
