@@ -70,7 +70,7 @@ Inputs:
     - is_log: plot loss landscape in log plot
     
 
-![ ](Visualization/images/Contour_plot_example.png)
+![ ](plots/Contour_plot_example.png)
 
 
 #### 3D contour plots using `plot_loss_3D`:
@@ -86,7 +86,7 @@ Inputs:
     - save_as: filename of plot to be saved
     - is_log: plot loss landscape in log plot
 
-![ ](Visualization/images/3dplot_example.png)
+![ ](plots/3dplot_example.png)
 
 #### Interactive 3D plots using `plot3D`:
 
@@ -98,7 +98,7 @@ Make an interactive 3D plot (mainly helpful for jupyterlab)
 Inputs:
     X,Y,Z values of loss landscape
 
-![ ](Visualization/images/3D_plot.png)
+![ ](plots/3D_plot.png)
 
 
 
