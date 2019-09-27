@@ -1,4 +1,4 @@
-# VisGrad
+# GradVis
 
 A DNN Training Visualization Toolbox
 
