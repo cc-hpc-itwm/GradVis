@@ -1,4 +1,5 @@
 import os
+import sys
 import math
 import torch
 import torch.nn as nn
@@ -8,7 +9,7 @@ import torchvision
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 import numpy as np
-
+sys.path.append("../toolbox")
 import Visualization as vis
 import nn_model
 import trajectory_plots as tplot

@@ -148,7 +148,7 @@ def plot_loss_2D(path_to_file,filename="out", is_log=False):
         filename: name of the plot that is saved.
         is_log (boolean): plot the logarithmic loss landscape and trajectory.
     """
-    outs = np.load(path_to_file)
+    outs = np.load(path_to_file, allow_pickle=True)
     flag = outs["b"]
     outs = outs["a"]
 
@@ -173,7 +173,7 @@ def plot_loss_3D(path_to_file, filename="out_3D", height=10,degrees=210, is_log=
         degrees: turns the plot by the amount of degrees specified.
         is_log (boolean): plot the logarithmic loss landscape and trajectory.
     """
-    outs = np.load(path_to_file)
+    outs = np.load(path_to_file, allow_pickle=True)
     flag = outs["b"]
     outs = outs["a"]
 

@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 import numpy as np
-
+sys.path.append("../toolbox")
 import Visualization as vis
 import nn_model
 import trajectory_plots as tplot
