@@ -109,3 +109,8 @@ Two examples are provided showing different use-cases:
  - Multiple_minima.py: Allows multiple minima plotting.
 
  - Resnet_vis.py: Plots loss landscape of a Resnet20 in 2D and 3D.
+
+## Roadmap
+
+* Hessian Eigenvalue density calculation
+* Distributed computation on multiple nodes
