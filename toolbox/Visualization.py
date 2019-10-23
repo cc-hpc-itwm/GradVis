@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 from sklearn.decomposition import PCA
+import hessian_functions as hf
 
 def vprint(*vargs, **kwargs):
     if vprint.verbosity >0:
@@ -23,15 +24,13 @@ def vectoriz(vector_orig,parameter):
     """
     vector = []
     indic = 0
-    #zahler = 0
     for p in parameter:
         len_p = p.size
         p_size = p.shape
-        vec_it = vector_orig[indic:(indic+len_p)].reshape(p_size)#[p_size[i] for i in range(len(p_size))])
-        #vector.append(torch.tensor(vec_it, dtype=torch.float32))
+        #print(p_size)
+        vec_it = vector_orig[indic:(indic+len_p)].reshape(p_size)
         vector.append(np.array(vec_it, dtype=np.float32))
         indic += len_p
-        #zahler += 1
     return vector
 
 
@@ -144,6 +143,7 @@ def cont_loss(model,parameter,alph,bet,get_v,get_w):
             ind += 1
 
         # load parameters into model and calcualte loss
+        #print(testi_clone)
         model.set_parameters(testi_clone)
         loss = model.calc_loss()
         vals = np.append(vals,loss)
@@ -253,7 +253,7 @@ def _visualize(model,filenames,N,random_dir=False,proz=0.5,v_vec=[],w_vec=[],ver
 
 
     # load the parameters of the final step
-    parameter = model.get_parameters()#filename=filenames[-1])
+    parameter = model.get_parameters()
     parlis = list(parameter.values()) # list of 'parameter' values
 
     if random_dir:
@@ -265,9 +265,9 @@ def _visualize(model,filenames,N,random_dir=False,proz=0.5,v_vec=[],w_vec=[],ver
         v = v_vec
         w = w_vec
     elif random_dir:
-        pytorch_total_params = sum(p.numel() for p in list(parlis))
-        v = np.random.normal(size=pytorch_total_params)
-        w = np.random.normal(size=pytorch_total_params)
+        total_params = sum(np.size(p) for p in parlis)
+        v = np.random.normal(size=total_params)
+        w = np.random.normal(size=total_params)
     else:
         v,w,pca_variance = get_pca_vec(model, filenames,layername,pca_direcs=pca_dirs)
 
@@ -372,3 +372,43 @@ def visualize(model,filenames,N,path_to_file,random_dir=False,proz=0.5,v_vec=[],
     else:
         outputs,flag = _visualize(model,filenames,N,random_dir=random_dir,proz=proz,v_vec=v_vec,w_vec=w_vec,verbose=verbose,layername=layername,pca_dirs=pca_dirs)
         np.savez_compressed(path_to_file, a=outputs, b=flag)
+
+
+
+def visualize_eigendirs(model,filenames,N,path_to_file,dataloader,criterion,use_gpu=True,proz=0.5,percentage=0.05,num_iters=1,mode='LA',verbose=False):
+    """
+    Wrapper for _visualize function that saves results as npz (numpy_compressed) file
+
+    Args:
+        model: nn model, with nn_model.Base_NNModel interface
+        filenames: list of checkpoint names (files with parameters), orderered with the centerpoint last in list
+        N: number of grid points for plotting (for 1 dim)
+        path_to_file: path and filename where the results are going to be saved at
+        random_dir (bool): if random directions should be used instead of PCA
+        proz: margins for visualized space (in %)
+        v_vec, w_vec: if defined, custom vectors will be used instead of PCA
+        verbose: verbosity of prints
+        pca_dirs: choose the pca directions to be plotted, if None the first two are chosen
+    """
+
+    my_file = Path(path_to_file+".npz")
+    eigenfile = Path("eigen_"+path_to_file+"_vecs.npy")
+
+    if my_file.is_file():
+        print("File {} already exists!".format(path_to_file+".npz"))
+    else:
+        if eigenfile.is_file():
+            print("File {} already exists! Continuing with loss landscape calculation...".format("eigen_"+path_to_file+"_vecs.npy"))
+            vecs = np.load("eigen_"+path_to_file+"_vecs.npy")
+            outputs,flag = _visualize(model,filenames,N,proz=proz,v_vec=vecs[0,:],w_vec=vecs[1,:],verbose=verbose)
+            np.savez_compressed(path_to_file, a=outputs, b=flag)
+        else:
+            hf.get_eigenvector(model.model,dataloader,criterion,filename="eigen_"+path_to_file,num_eigs=2,use_gpu=use_gpu,percentage=percentage,num_iters=num_iters,mode=mode)
+            vecs = np.load("eigen_"+path_to_file+"_vecs.npy")
+            outputs,flag = _visualize(model,filenames,N,proz=proz,v_vec=vecs[0,:],w_vec=vecs[1,:],verbose=verbose)
+            np.savez_compressed(path_to_file, a=outputs, b=flag)
+
+
+
+def Pytorch_stochastic_lanczos(model,dataloader,criterion,filename,num_repeats=10,num_eigs=80, percentage=0.2, use_gpu=True,num_iters=1,verbose=False):
+    return hf.stochastic_lanczos(model,dataloader,criterion,filename,num_repeats=10,num_eigs=80, percentage=0.2, use_gpu=True,num_iters=1,verbose=False)
