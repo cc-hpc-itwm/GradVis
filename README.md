@@ -112,5 +112,4 @@ Two examples are provided showing different use-cases:
 
 ## Roadmap
 
-* Hessian Eigenvalue density calculation
 * Distributed computation on multiple nodes
