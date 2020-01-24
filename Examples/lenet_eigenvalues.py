@@ -181,7 +181,7 @@ tplot.plot_loss_3D("minima_vis_eigen.npz",filename="Lenet_minima_3D_plot_eigen",
 hf.stochastic_lanczos(net,train_data,nn.CrossEntropyLoss(),"Lenet_eigenvals",percentage=0.05,num_iters=5,verbose=True)
 x1,x2 = hf.get_xlim(["Lenet_eigenvals.npz"])
 x = np.linspace(x1-2,x2+2,1000)
-func = hf.get_spectrum(x,np.sqrt(1e-2),"Lenet_eigenvalues.npz")
+func = hf.get_spectrum(x,np.sqrt(1e-2),"Lenet_eigenvals.npz")
 
 f = plt.figure()
 plt.semilogy(x,func)
